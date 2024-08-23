@@ -1,0 +1,19 @@
+services: 
+  hue:
+    image: gethue/hue:latest
+    hostname: hue
+    container_name: hue
+    volumes:
+      - ./hue.ini:/usr/share/hue/desktop/conf/hue.ini
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql
+  
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: huemysql
+      MYSQL_DATABASE: hue
+      MYSQL_USER: hue
+      MYSQL_PASSWORD: hue
