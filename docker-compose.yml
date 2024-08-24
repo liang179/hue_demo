@@ -1,69 +1,70 @@
 services: 
-  hue:
-    image: gethue/hue:latest
-    hostname: hue
-    container_name: hue
-    volumes:
-      - ./hue.ini:/usr/share/hue/desktop/conf/hue.ini
-    ports:
-      - "8888:8888"
-    depends_on:
-      mysql:
-        condition: service_healthy
-  
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: huemysql
-      MYSQL_DATABASE: hue
-      MYSQL_USER: hue
-      MYSQL_PASSWORD: hue
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost","-phuemysql"]
-
-  # namenode:
-  #   image: apache/hadoop:3.3.6
-  #   hostname: namenode
-  #   command: ["hdfs", "namenode"]
-  #   ports:
-  #     - 9870:9870
-  #   env_file:
-  #     - ./env.config
-  #   environment:
-  #     ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
-  # datanode:
-  #   image: apache/hadoop:3.3.6
-  #   command: ["hdfs", "datanode"]
-  #   env_file:
-  #     - ./env.config
-  # resourcemanager:
-  #   image: apache/hadoop:3.3.6
-  #   hostname: resourcemanager
-  #   command: ["yarn", "resourcemanager"]
-  #   ports:
-  #     - 8088:8088 
-  #   env_file:
-  #     - ./env.config
+  # hue:
+  #   image: gethue/hue:latest
+  #   hostname: hue
+  #   container_name: hue
   #   volumes:
-  #     - ./word_count:/mnt
-  # nodemanager:
-  #   image: apache/hadoop:3.3.6
-  #   command: ["yarn", "nodemanager"]
+  #     - ./hue.ini:/usr/share/hue/desktop/conf/hue.ini
   #   ports:
-  #     - 8042:8042
-  #   env_file:
-  #     - ./env.config
+  #     - "8888:8888"
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: mysql
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: huemysql
+  #     MYSQL_DATABASE: hue
+  #     MYSQL_USER: hue
+  #     MYSQL_PASSWORD: hue
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost","-phuemysql"]
+
+  namenode:
+    image: apache/hadoop:3.3.6
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - 9870:9870
+    env_file:
+      - ./env.config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+  datanode:
+    image: apache/hadoop:3.3.6
+    command: ["hdfs", "datanode"]
+    env_file:
+      - ./env.config
+  resourcemanager:
+    image: apache/hadoop:3.3.6
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - 8088:8088 
+    env_file:
+      - ./env.config
+    volumes:
+      - ./word_count:/mnt
+  nodemanager:
+    image: apache/hadoop:3.3.6
+    command: ["yarn", "nodemanager"]
+    ports:
+      - 8042:8042
+    env_file:
+      - ./env.config
 
   hive:
     image: apache/hive:4.0.0
-    container_name: hive
+    volumes:
+      - ./app:/app
+      - ./config:/opt/hadoop/etc/hadoop
+      - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml
     ports:
       - 10000:10000
       - 10002:10002
-    env_file:
-      - ./env.config
     environment:
       - SERVICE_NAME=hiveserver2
