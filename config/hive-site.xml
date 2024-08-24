@@ -58,7 +58,7 @@
     </property>
     <property>
         <name>tez.lib.uris</name>
-        <value>hdfs://namenode/apps/tez-0.10.3/apache-tez-0.10.3-bin.tar.gz</value>
+        <value>hdfs://namenode/apps/tez-0.10.3/apache-tez-0.10.3.tar.gz</value>
     </property>
     <property>
         <name>hive.metastore.warehouse.dir</name>
